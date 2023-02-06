@@ -35,6 +35,12 @@ public class BooksController {
         bookDao.update(id, book);
         return "redirect:/books/{id}";
     }
+    @DeleteMapping("/{id}")
+    public String delete(@PathVariable("id") int id)
+    {
+        bookDao.delete(id);
+        return "redirect:/books";
+    }
 
     @GetMapping("/new")
     public String newBook(@ModelAttribute("book") Book book){

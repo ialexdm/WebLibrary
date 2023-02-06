@@ -37,4 +37,8 @@ public class BookDAO {
         updatedBook.setAuthor(book.getAuthor());
         updatedBook.setYear(book.getYear());
     }
+
+    public void delete(int id) {
+        books.removeIf(b -> b.getId() == id);
+    }
 }
