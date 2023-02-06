@@ -20,4 +20,9 @@ public class BookDAO {
     public List<Book> index() {
         return books;
     }
+
+    public void save(Book book) {
+        book.setId(++GENERATED_ID);
+        books.add(book);
+    }
 }
