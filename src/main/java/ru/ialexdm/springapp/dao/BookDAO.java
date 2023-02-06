@@ -1,5 +1,7 @@
 package ru.ialexdm.springapp.dao;
 
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.ialexdm.springapp.models.Book;
 
@@ -7,38 +9,35 @@ import java.util.ArrayList;
 import java.util.List;
 @Component
 public class BookDAO {
+    private final JdbcTemplate jdbcTemplate;
 
-    private static int GENERATED_ID;
-    private List<Book> books;
-    {
-        books = new ArrayList<>();
-        books.add(new Book(++GENERATED_ID, "Dictionary", "Dal" ,2008));
-        books.add(new Book(++GENERATED_ID, "Code Complete","Steve McConnell", 2017));
-        books.add(new Book(++GENERATED_ID, "Harry Potter and Sorcerer's stone", "Joanne K Rowling",2004));
+    public BookDAO(JdbcTemplate jdbcTemplate) {
+        this.jdbcTemplate = jdbcTemplate;
     }
 
     public List<Book> index() {
-        return books;
+
+        return jdbcTemplate.query("SELECT * FROM Book", new BeanPropertyRowMapper<>(Book.class));
     }
 
     public void save(Book book) {
-        book.setId(++GENERATED_ID);
-        books.add(book);
+        jdbcTemplate.update("INSERT INTO Book (name, author, year) VALUES (?,?,?)",
+                book.getName(), book.getAuthor(), book.getYear());
     }
 
     public Book show(int id){
-        return books.stream().filter(book -> book.getId() == id).findAny().orElse(null);
+        return jdbcTemplate.query("SELECT * FROM Book WHERE id=?",
+                new Object[]{id},
+                new BeanPropertyRowMapper<>(Book.class)).stream().findAny().orElse(null);
     }
 
-    public void update(int id, Book book) {
-        Book updatedBook = books.stream().filter(b -> b.getId() == id).findAny().get();
-
-        updatedBook.setName(book.getName());
-        updatedBook.setAuthor(book.getAuthor());
-        updatedBook.setYear(book.getYear());
+    public void update(int id, Book updatedBook) {
+        jdbcTemplate.update("UPDATE Book SET name=?, author=?, year=? WHERE id=?",
+                updatedBook.getName(),updatedBook.getAuthor(),updatedBook.getYear(), id);
     }
 
-    public void delete(int id) {
-        books.removeIf(b -> b.getId() == id);
+    public void delete(int id)
+    {
+        jdbcTemplate.update("DELETE FROM Book WHERE id=?", id);
     }
 }
