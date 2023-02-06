@@ -9,6 +9,10 @@
 <p th:text=" 'ID: ' + ${book.getId()}">VALUE</p>
 <p th:text=" 'Author: ' + ${book.getAuthor()}">VALUE</p>
 <p th:text=" 'Year: ' + ${book.getYear()}">VALUE</p>
+<form th:method="GET" th:action="@{/books/{id}/edit(id=${book.getId()})}">
+    <label></label>
+    <input type="submit" value="Edit"/>
+</form>
 <br/>
 <form th:method="GET" th:action="@{/books}">
     <label></label>

@@ -29,4 +29,12 @@ public class BookDAO {
     public Book show(int id){
         return books.stream().filter(book -> book.getId() == id).findAny().orElse(null);
     }
+
+    public void update(int id, Book book) {
+        Book updatedBook = books.stream().filter(b -> b.getId() == id).findAny().get();
+
+        updatedBook.setName(book.getName());
+        updatedBook.setAuthor(book.getAuthor());
+        updatedBook.setYear(book.getYear());
+    }
 }
