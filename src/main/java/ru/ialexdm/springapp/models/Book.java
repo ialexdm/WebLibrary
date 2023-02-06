@@ -1,26 +1,38 @@
 package ru.ialexdm.springapp.models;
 
 public class Book {
-    int id;
-    String name;
-    String author;
-    int year;
+    private Integer id;
+    private String name;
+    private String author;
+    private Integer year;
+    private Integer readerId;
+
+    public Integer getReaderId() {
+        return readerId;
+    }
+
+    public void setReaderId(Integer readerId) {
+        this.readerId = readerId;
+    }
+
+
 
     public Book() {
     }
 
-    public Book(int id, String name, String author, int year) {
+    public Book(Integer id, String name, String author, Integer year, Integer readerId) {
         this.id = id;
         this.name = name;
         this.author = author;
         this.year = year;
+        this.readerId = readerId;
     }
 
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -32,11 +44,11 @@ public class Book {
         this.name = name;
     }
 
-    public int getYear() {
+    public Integer getYear() {
         return year;
     }
 
-    public void setYear(int year) {
+    public void setYear(Integer year) {
         this.year = year;
     }
     public String getAuthor() {
