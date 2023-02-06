@@ -25,4 +25,8 @@ public class BookDAO {
         book.setId(++GENERATED_ID);
         books.add(book);
     }
+
+    public Book show(int id){
+        return books.stream().filter(book -> book.getId() == id).findAny().orElse(null);
+    }
 }
