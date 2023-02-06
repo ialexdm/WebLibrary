@@ -23,17 +23,17 @@ public class ReaderDAO {
                 reader.getFullName(), reader.getAge());
     }
 
-    public Reader show(int id){
+    public Reader show(Integer id){
         return jdbcTemplate.query("SELECT * FROM Reader WHERE id=?",
                 new Object[]{id},
                 new BeanPropertyRowMapper<>(Reader.class)).stream().findAny().orElse(null);
     }
-    public void update(int id, Reader updatedReader) {
+    public void update(Integer id, Reader updatedReader) {
         jdbcTemplate.update("UPDATE Reader SET full_name=?, age=? WHERE id=?",
                 updatedReader.getFullName(),updatedReader.getAge(), id);
     }
 
-    public void delete(int id)
+    public void delete(Integer id)
     {
         jdbcTemplate.update("DELETE FROM Reader WHERE id=?", id);
     }

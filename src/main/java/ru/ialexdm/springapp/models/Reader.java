@@ -1,25 +1,25 @@
 package ru.ialexdm.springapp.models;
 
+import java.util.ArrayList;
+import java.util.List;
+
 public class Reader {
-    private int id;
+    private Integer id;
     private String fullName;
-    private int age;
-
+    private Integer age;
     public Reader(){
-
     }
 
-    public Reader(int id, String fullName, int age) {
+    public Reader(Integer id, String fullName, Integer age) {
         this.id = id;
         this.fullName = fullName;
         this.age = age;
     }
-
-    public int getId() {
+    public Integer getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(Integer id) {
         this.id = id;
     }
 
@@ -31,11 +31,11 @@ public class Reader {
         this.fullName = fullName;
     }
 
-    public int getAge() {
+    public Integer getAge() {
         return age;
     }
 
-    public void setAge(int age) {
+    public void setAge(Integer age) {
         this.age = age;
     }
 }

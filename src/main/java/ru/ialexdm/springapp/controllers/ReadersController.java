@@ -19,24 +19,24 @@ public class ReadersController {
         return "readers/index";
     }
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model)
+    public String show(@PathVariable("id") Integer id, Model model)
     {
         model.addAttribute(readerDAO.show(id));
         return "readers/show";
     }
     @GetMapping("/{id}/edit")
-    public String editReader(@PathVariable("id") int id, Model model){
+    public String editReader(@PathVariable("id") Integer id, Model model){
         model.addAttribute("reader", readerDAO.show(id));
         return "readers/edit";
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("reader") Reader reader, @PathVariable("id") int id){
+    public String update(@ModelAttribute("reader") Reader reader, @PathVariable("id") Integer id){
         readerDAO.update(id, reader);
         return "redirect:/readers/{id}";
     }
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id){
+    public String delete(@PathVariable("id") Integer id){
         readerDAO.delete(id);
         return "redirect:/readers";
     }
