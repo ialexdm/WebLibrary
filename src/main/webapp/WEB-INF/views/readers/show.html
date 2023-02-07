@@ -8,6 +8,19 @@
 <p th:text=" 'Full name: ' + ${reader.getFullName()}">VALUE</p>
 <p th:text=" 'ID: ' + ${reader.getId()}">VALUE</p>
 <p th:text=" 'Age: ' + ${reader.getAge()}">VALUE</p>
+<hr/>
+<form th:if="${!readersBooks.isEmpty()}">
+    <p>Books are taken:</p>
+    <div th:each="book : ${readersBooks}">
+        <a th:href="@{/books/{id}(id = ${book.getId()})}"
+           th:text="${book.getName()} + ', '+ ${book.getAuthor()} + ', ' + ${book.getYear()}"> </a>
+    </div>
+    <hr/>
+</form>
+<div th:if="${readersBooks.isEmpty()}">
+    <p>The reader has not taken any book yet</p>
+</div>
+
 <form th:method="GET" th:action="@{/readers/{id}/edit(id=${reader.getId()})}">
     <label></label>
     <input type="submit" value="Edit"/>

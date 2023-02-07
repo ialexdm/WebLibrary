@@ -29,6 +29,10 @@ public class BookDAO {
                 new Object[]{id},
                 new BeanPropertyRowMapper<>(Book.class)).stream().findAny().orElse(null);
     }
+    public List<Book> showReaderBook(Integer id){
+        return  jdbcTemplate.query("SELECT * FROM Book WHERE Book.reader_id=?",
+                new Object[]{id},
+                new BeanPropertyRowMapper<>(Book.class));   }
 
     public void update(Integer id, Book updatedBook) {
         jdbcTemplate.update("UPDATE Book SET name=?, author=?, year=? WHERE id=?",
