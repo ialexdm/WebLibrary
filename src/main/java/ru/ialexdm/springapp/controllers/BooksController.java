@@ -10,6 +10,8 @@ import ru.ialexdm.springapp.dao.ReaderDAO;
 import ru.ialexdm.springapp.models.Book;
 import ru.ialexdm.springapp.models.Reader;
 
+import java.util.Optional;
+
 @Controller
 @RequestMapping("/books")
 public class BooksController {
@@ -28,11 +30,11 @@ public class BooksController {
     }
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Integer id, Model model, @ModelAttribute("reader")Reader reader){
-        Book book = bookDao.show(id);
-        model.addAttribute("book", book);
-        if (book.getReaderId()!=null)
+        model.addAttribute("book", bookDao.show(id));
+        Optional<Reader> bookReader = bookDao.getBookReader(id);
+        if (bookReader.isPresent())
         {
-            model.addAttribute("bookReader", readerDao.show(book.getReaderId()));
+            model.addAttribute("bookReader", bookReader.get());
         }
         else {
             model.addAttribute("readers", readerDao.index());

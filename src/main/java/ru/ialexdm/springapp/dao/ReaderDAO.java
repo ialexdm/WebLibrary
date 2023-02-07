@@ -3,6 +3,7 @@ package ru.ialexdm.springapp.dao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.ialexdm.springapp.models.Book;
 import ru.ialexdm.springapp.models.Reader;
 
 import java.util.List;
@@ -25,14 +26,23 @@ public class ReaderDAO {
     }
 
     public Reader show(Integer id){
-        return jdbcTemplate.query("SELECT * FROM Reader WHERE id=?",
-                new Object[]{id},
-                new BeanPropertyRowMapper<>(Reader.class)).stream().findAny().orElse(null);
+        Optional<Reader> reader = jdbcTemplate.query("SELECT * FROM Reader WHERE id=?",
+                new BeanPropertyRowMapper<>(Reader.class),
+                new Object[]{id}
+                ).stream().findAny();
+        return reader.orElse(null);
     }
     public Reader show(String fullName) {
-        return jdbcTemplate.query("select * from reader where full_name=?",
-                new Object[]{fullName},
-                new BeanPropertyRowMapper<>(Reader.class)).stream().findAny().orElse(null);
+         Optional<Reader> reader = jdbcTemplate.query("select * from reader where full_name=?",
+                 new BeanPropertyRowMapper<>(Reader.class),
+                 new Object[]{fullName}
+                ).stream().findAny();
+        return reader.orElse(null);
+    }
+    public List<Book> showReaderBook(Integer readeId){
+        return  jdbcTemplate.query("SELECT * FROM Book WHERE Book.reader_id=?",
+                new BeanPropertyRowMapper<>(Book.class),
+                readeId);
     }
     public void update(Integer id, Reader updatedReader) {
         jdbcTemplate.update("UPDATE Reader SET full_name=?, age=? WHERE id=?",

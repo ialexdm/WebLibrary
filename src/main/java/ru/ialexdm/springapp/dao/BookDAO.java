@@ -4,8 +4,11 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.ialexdm.springapp.models.Book;
+import ru.ialexdm.springapp.models.Reader;
 
 import java.util.List;
+import java.util.Optional;
+
 @Component
 public class BookDAO {
     private final JdbcTemplate jdbcTemplate;
@@ -25,14 +28,21 @@ public class BookDAO {
     }
 
     public Book show(Integer id){
-        return jdbcTemplate.query("SELECT * FROM Book WHERE Book.id=?",
-                new Object[]{id},
-                new BeanPropertyRowMapper<>(Book.class)).stream().findAny().orElse(null);
+        Optional<Book> book = jdbcTemplate.query("SELECT * FROM Book WHERE Book.id=?",
+                new BeanPropertyRowMapper<>(Book.class),
+                new Object[]{id}
+        ).stream().findAny();
+        return book.orElse(null);
+
     }
-    public List<Book> showReaderBook(Integer id){
-        return  jdbcTemplate.query("SELECT * FROM Book WHERE Book.reader_id=?",
-                new Object[]{id},
-                new BeanPropertyRowMapper<>(Book.class));   }
+
+    public Optional<Reader> getBookReader(Integer bookId){
+        return jdbcTemplate
+                .query("SELECT Reader.* FROM Book join Reader on Book.reader_id = Reader.id where Book.id=?",
+                        new BeanPropertyRowMapper<>(Reader.class),
+                        new Object[]{bookId})
+                .stream().findAny();
+    }
 
     public void update(Integer id, Book updatedBook) {
         jdbcTemplate.update("UPDATE Book SET name=?, author=?, year=? WHERE id=?",

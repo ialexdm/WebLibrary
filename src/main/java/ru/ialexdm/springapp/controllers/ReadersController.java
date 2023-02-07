@@ -5,7 +5,6 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.ialexdm.springapp.dao.BookDAO;
 import ru.ialexdm.springapp.dao.ReaderDAO;
 import ru.ialexdm.springapp.models.Reader;
 import ru.ialexdm.springapp.util.ReaderValidator;
@@ -14,11 +13,9 @@ import ru.ialexdm.springapp.util.ReaderValidator;
 @RequestMapping("/readers")
 public class ReadersController {
     private final ReaderDAO readerDAO;
-    private final BookDAO bookDAO;
     private final ReaderValidator readerValidator;
-    public ReadersController(ReaderDAO readerDAO, BookDAO bookDAO, ReaderValidator readerValidator) {
+    public ReadersController(ReaderDAO readerDAO, ReaderValidator readerValidator) {
         this.readerDAO = readerDAO;
-        this.bookDAO = bookDAO;
         this.readerValidator = readerValidator;
     }
     @GetMapping()
@@ -31,7 +28,7 @@ public class ReadersController {
     {
         Reader reader = readerDAO.show(id);
         model.addAttribute("reader",reader);
-        model.addAttribute("readersBooks",bookDAO.showReaderBook(reader.getId()));
+        model.addAttribute("readersBooks",readerDAO.showReaderBook(reader.getId()));
         return "readers/show";
     }
     @GetMapping("/{id}/edit")
@@ -42,8 +39,6 @@ public class ReadersController {
 
     @PatchMapping("/{id}")
     public String update(@ModelAttribute("reader")@Valid Reader reader, BindingResult bindingResult, @PathVariable("id") Integer id){
-        readerValidator.validate(reader,bindingResult);
-
         if (bindingResult.hasErrors()){
             return "readers/edit";
         }
