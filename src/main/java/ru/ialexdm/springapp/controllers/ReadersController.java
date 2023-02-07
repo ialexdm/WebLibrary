@@ -1,20 +1,25 @@
 package ru.ialexdm.springapp.controllers;
 
+import jakarta.validation.Valid;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import ru.ialexdm.springapp.dao.BookDAO;
 import ru.ialexdm.springapp.dao.ReaderDAO;
 import ru.ialexdm.springapp.models.Reader;
+import ru.ialexdm.springapp.util.ReaderValidator;
 
 @Controller
 @RequestMapping("/readers")
 public class ReadersController {
     private final ReaderDAO readerDAO;
     private final BookDAO bookDAO;
-    public ReadersController(ReaderDAO readerDAO, BookDAO bookDAO) {
+    private final ReaderValidator readerValidator;
+    public ReadersController(ReaderDAO readerDAO, BookDAO bookDAO, ReaderValidator readerValidator) {
         this.readerDAO = readerDAO;
         this.bookDAO = bookDAO;
+        this.readerValidator = readerValidator;
     }
     @GetMapping()
     public String index(Model model){
@@ -36,7 +41,12 @@ public class ReadersController {
     }
 
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("reader") Reader reader, @PathVariable("id") Integer id){
+    public String update(@ModelAttribute("reader")@Valid Reader reader, BindingResult bindingResult, @PathVariable("id") Integer id){
+        readerValidator.validate(reader,bindingResult);
+
+        if (bindingResult.hasErrors()){
+            return "readers/edit";
+        }
         readerDAO.update(id, reader);
         return "redirect:/readers/{id}";
     }
@@ -50,9 +60,13 @@ public class ReadersController {
     {
         return "readers/new";
     }
-    @PostMapping("")
-    public String create(@ModelAttribute("reader")Reader reader)
-    {
+    @PostMapping()
+    public String create(@ModelAttribute("reader")@Valid Reader reader, BindingResult bindingResult) {
+        readerValidator.validate(reader,bindingResult);
+
+        if (bindingResult.hasErrors()){
+            return "readers/new";
+        }
         readerDAO.save(reader);
         return "redirect:/readers";
     }
