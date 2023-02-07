@@ -3,10 +3,10 @@ package ru.ialexdm.springapp.dao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
-import ru.ialexdm.springapp.models.Book;
 import ru.ialexdm.springapp.models.Reader;
 
 import java.util.List;
+import java.util.Optional;
 
 @Component
 public class ReaderDAO {
@@ -29,6 +29,11 @@ public class ReaderDAO {
                 new Object[]{id},
                 new BeanPropertyRowMapper<>(Reader.class)).stream().findAny().orElse(null);
     }
+    public Reader show(String fullName) {
+        return jdbcTemplate.query("select * from reader where full_name=?",
+                new Object[]{fullName},
+                new BeanPropertyRowMapper<>(Reader.class)).stream().findAny().orElse(null);
+    }
     public void update(Integer id, Reader updatedReader) {
         jdbcTemplate.update("UPDATE Reader SET full_name=?, age=? WHERE id=?",
                 updatedReader.getFullName(),updatedReader.getAge(), id);
@@ -38,4 +43,6 @@ public class ReaderDAO {
     {
         jdbcTemplate.update("DELETE FROM Reader WHERE id=?", id);
     }
+
+
 }
