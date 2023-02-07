@@ -9,9 +9,10 @@
 <p th:text=" 'ID: ' + ${book.getId()}">VALUE</p>
 <p th:text=" 'Author: ' + ${book.getAuthor()}">VALUE</p>
 <p th:text=" 'Year: ' + ${book.getYear()}">VALUE</p>
-<div th:if="${book.getReaderId() != null}">
-    <p th:text="'This book is taken by ' + ${bookReader.getFullName}"></p>
-</div>
+<form th:method="PATCH" th:action="@{/books/{id}/take(id=${book.getId()})}" th:if="${book.getReaderId() != null}">
+    <label th:text="'This book is taken by ' + ${bookReader.getFullName}"></label>
+    <input type="submit" value="release the book">
+</form>
 <div th:if="${book.getReaderId() == null}">
     <form th:method="PATCH" th:action="@{/books/{id}/give(id=${book.getId()})}">
         <label for="reader">Choose reader</label>

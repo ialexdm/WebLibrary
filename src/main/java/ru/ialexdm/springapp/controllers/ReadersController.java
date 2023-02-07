@@ -3,6 +3,7 @@ package ru.ialexdm.springapp.controllers;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import ru.ialexdm.springapp.dao.BookDAO;
 import ru.ialexdm.springapp.dao.ReaderDAO;
 import ru.ialexdm.springapp.models.Reader;
 
@@ -10,8 +11,10 @@ import ru.ialexdm.springapp.models.Reader;
 @RequestMapping("/readers")
 public class ReadersController {
     private final ReaderDAO readerDAO;
-    public ReadersController(ReaderDAO readerDAO) {
+    private final BookDAO bookDAO;
+    public ReadersController(ReaderDAO readerDAO, BookDAO bookDAO) {
         this.readerDAO = readerDAO;
+        this.bookDAO = bookDAO;
     }
     @GetMapping()
     public String index(Model model){
@@ -21,7 +24,9 @@ public class ReadersController {
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Integer id, Model model)
     {
-        model.addAttribute(readerDAO.show(id));
+        Reader reader = readerDAO.show(id);
+        model.addAttribute("reader",reader);
+        model.addAttribute("readersBooks",bookDAO.showReaderBook(reader.getId()));
         return "readers/show";
     }
     @GetMapping("/{id}/edit")

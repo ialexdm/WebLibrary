@@ -3,6 +3,7 @@ package ru.ialexdm.springapp.dao;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
+import ru.ialexdm.springapp.models.Book;
 import ru.ialexdm.springapp.models.Reader;
 
 import java.util.List;
