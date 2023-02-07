@@ -25,7 +25,7 @@ public class BooksController {
         return "books/index";
     }
     @GetMapping("/{id}")
-    public String show(@PathVariable("id") int id, Model model, @ModelAttribute("reader")Reader reader){
+    public String show(@PathVariable("id") Integer id, Model model, @ModelAttribute("reader")Reader reader){
         Book book = bookDao.show(id);
         model.addAttribute("book", book);
         if (book.getReaderId()!=null)
@@ -38,24 +38,30 @@ public class BooksController {
         return  "books/show";
     }
     @GetMapping("/{id}/edit")
-    public String editBook(@PathVariable("id") int id, Model model){
+    public String editBook(@PathVariable("id") Integer id, Model model){
         model.addAttribute("book", bookDao.show(id));
         return "books/edit";
     }
     @PatchMapping("/{id}")
-    public String update(@ModelAttribute("book")Book book, @PathVariable("id") int id){
+    public String update(@ModelAttribute("book")Book book, @PathVariable("id") Integer id){
         bookDao.update(id, book);
         return "redirect:/books/{id}";
     }
     @PatchMapping("/{id}/give")
-    public String give(@ModelAttribute("book")Book book,
+    public String transfer(@ModelAttribute("book")Book book,
                        @ModelAttribute("reader") Reader reader,
-                       @PathVariable("id") int id){
-        bookDao.give(id, reader.getId());
+                       @PathVariable("id") Integer id){
+        bookDao.transfer(id, reader.getId());
+        return "redirect:/books/{id}";
+    }
+    @PatchMapping("/{id}/take")
+    public String transfer(@ModelAttribute("book")Book book,
+                           @PathVariable("id") Integer id){
+        bookDao.transfer(id, null);
         return "redirect:/books/{id}";
     }
     @DeleteMapping("/{id}")
-    public String delete(@PathVariable("id") int id)
+    public String delete(@PathVariable("id") Integer id)
     {
         bookDao.delete(id);
         return "redirect:/books";

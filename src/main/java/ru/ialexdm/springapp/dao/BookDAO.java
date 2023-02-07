@@ -5,7 +5,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.stereotype.Component;
 import ru.ialexdm.springapp.models.Book;
 
-import java.util.ArrayList;
 import java.util.List;
 @Component
 public class BookDAO {
@@ -38,7 +37,7 @@ public class BookDAO {
                 updatedBook.getYear(),
                 id);
     }
-    public void give(Integer id, Integer readerId) {
+    public void transfer(Integer id, Integer readerId) {
         jdbcTemplate.update("UPDATE Book SET reader_id=? WHERE id=?",
                 readerId, id);
     }
