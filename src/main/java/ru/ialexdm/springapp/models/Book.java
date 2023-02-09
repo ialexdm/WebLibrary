@@ -1,43 +1,41 @@
 package ru.ialexdm.springapp.models;
 
+import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
-import java.time.Year;
-import java.util.Calendar;
-
+@Entity
+@Table(name = "Book")
 public class Book {
+    @Id
+    @Column(name = "id")
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @Column(name = "name")
     @NotEmpty(message = "Field should not be empty")
     private String name;
+    @Column(name = "author")
     @NotEmpty(message = "Field should not be empty")
     @Size(min = 2,max = 128, message = "Field should be greater than 2 and less than 128 letters")
     private String author;
     @Min(value = 1800, message = "Year should be greater than 1800 and less than 2023")
     @Max(value = 2023, message = "Year should be greater than 0 and less than 128")
     @NotNull(message = "Field should not be empty")
+    @Column(name = "year")
     private Integer year;
-    private Integer readerId;
 
-    public Integer getReaderId() {
-        return readerId;
-    }
-
-    public void setReaderId(Integer readerId) {
-        this.readerId = readerId;
-    }
-
-
+    @ManyToOne
+    @JoinColumn(name = "reader_id", referencedColumnName = "id")
+    private  Reader bookReader;
 
     public Book() {
     }
 
-    public Book(Integer id, String name, String author, Integer year, Integer readerId) {
+    public Book(Integer id, String name, String author, Integer year) {
         this.id = id;
         this.name = name;
         this.author = author;
         this.year = year;
-        this.readerId = readerId;
     }
 
     public Integer getId() {
@@ -69,5 +67,13 @@ public class Book {
 
     public void setAuthor(String author) {
         this.author = author;
+    }
+
+    public Reader getBookReader() {
+        return bookReader;
+    }
+
+    public void setBookReader(Reader bookReader) {
+        this.bookReader = bookReader;
     }
 }

@@ -5,45 +5,45 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import ru.ialexdm.springapp.dao.BookDAO;
-import ru.ialexdm.springapp.dao.ReaderDAO;
 import ru.ialexdm.springapp.models.Book;
 import ru.ialexdm.springapp.models.Reader;
-
-import java.util.Optional;
+import ru.ialexdm.springapp.services.BooksService;
+import ru.ialexdm.springapp.services.ReadersService;
 
 @Controller
 @RequestMapping("/books")
 public class BooksController {
 
-    private final BookDAO bookDao;
-    private final ReaderDAO readerDao;
+    private final BooksService booksService;
+    private final ReadersService readersService;
 
-    public BooksController(BookDAO bookDao, ReaderDAO readerDao) {
-        this.bookDao = bookDao;
-        this.readerDao = readerDao;
+    public BooksController(BooksService booksService, ReadersService readersService) {
+        this.booksService = booksService;
+        this.readersService = readersService;
     }
+
     @GetMapping()
     public String index(Model model){
-        model.addAttribute("books", bookDao.index());
+        model.addAttribute("books", booksService.findAll());
         return "books/index";
     }
     @GetMapping("/{id}")
     public String show(@PathVariable("id") Integer id, Model model, @ModelAttribute("reader")Reader reader){
-        model.addAttribute("book", bookDao.show(id));
-        Optional<Reader> bookReader = bookDao.getBookReader(id);
-        if (bookReader.isPresent())
+        Book book = booksService.findOne(id);
+        model.addAttribute("book", book);
+        Reader bookReader = booksService.getBookReader(book);
+        if (bookReader != null)
         {
-            model.addAttribute("bookReader", bookReader.get());
+            model.addAttribute("bookReader", bookReader);
         }
         else {
-            model.addAttribute("readers", readerDao.index());
+            model.addAttribute("readers", readersService.findAll());
         }
         return  "books/show";
     }
     @GetMapping("/{id}/edit")
     public String editBook(@PathVariable("id") Integer id, Model model){
-        model.addAttribute("book", bookDao.show(id));
+        model.addAttribute("book", booksService.findOne(id));
         return "books/edit";
     }
     @PatchMapping("/{id}")
@@ -53,26 +53,26 @@ public class BooksController {
             return "books/edit";
         }
 
-        bookDao.update(id, book);
+        booksService.update(id, book);
         return "redirect:/books/{id}";
     }
     @PatchMapping("/{id}/give")
     public String transfer(@ModelAttribute("book")Book book,
                        @ModelAttribute("reader") Reader reader,
                        @PathVariable("id") Integer id){
-        bookDao.transfer(id, reader.getId());
+        booksService.transfer(id, reader);
         return "redirect:/books/{id}";
     }
     @PatchMapping("/{id}/take")
     public String transfer(@ModelAttribute("book")Book book,
                            @PathVariable("id") Integer id){
-        bookDao.transfer(id, null);
+        booksService.transfer(id, null);
         return "redirect:/books/{id}";
     }
     @DeleteMapping("/{id}")
     public String delete(@PathVariable("id") Integer id)
     {
-        bookDao.delete(id);
+        booksService.delete(id);
         return "redirect:/books";
     }
 
@@ -87,7 +87,7 @@ public class BooksController {
         {
             return "books/new";
         }
-        bookDao.save(book);
+        booksService.save(book);
         return "redirect:/books";
     }
 
