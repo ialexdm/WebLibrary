@@ -3,15 +3,15 @@ package ru.ialexdm.springapp.util;
 import org.springframework.stereotype.Component;
 import org.springframework.validation.Errors;
 import org.springframework.validation.Validator;
-import ru.ialexdm.springapp.dao.ReaderDAO;
 import ru.ialexdm.springapp.models.Reader;
+import ru.ialexdm.springapp.services.ReadersService;
 
 @Component
 public class ReaderValidator implements Validator {
-    private final ReaderDAO readerDAO;
+    private final ReadersService readersService;
 
-    public ReaderValidator(ReaderDAO readerDAO) {
-        this.readerDAO = readerDAO;
+    public ReaderValidator(ReadersService readersService) {
+        this.readersService = readersService;
     }
 
     @Override
@@ -22,7 +22,7 @@ public class ReaderValidator implements Validator {
     @Override
     public void validate(Object target, Errors errors) {
         Reader reader = (Reader) target;
-        if(readerDAO.show(reader.getFullName()) !=  null){
+        if(readersService.findOne(reader.getFullName()) !=  null){
             errors.rejectValue("fullName","","This Full Name is already registered");
         }
 
