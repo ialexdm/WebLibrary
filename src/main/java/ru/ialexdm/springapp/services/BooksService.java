@@ -2,6 +2,7 @@ package ru.ialexdm.springapp.services;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.ialexdm.springapp.models.Book;
@@ -22,12 +23,24 @@ public class BooksService {
         this.booksRepository = booksRepository;
     }
 
-    public List<Book> findAll() {
-        return booksRepository.findAll();
+    public List<Book> findAll(boolean sortByYear) {
+        List<Book> books;
+        if (sortByYear){
+            books = booksRepository.findAll(Sort.by("year"));
+        }else{
+            books = booksRepository.findAll();
+        }
+        return books;
     }
 
-    public PagedBook findAll(int numberOfPage, int itemsPerPage) {
-        return new PagedBook(booksRepository.findAll(PageRequest.of(numberOfPage, itemsPerPage)));
+    public PagedBook findAll(int numberOfPage, int itemsPerPage, boolean sortByYear) {
+        PagedBook pagedBook;
+        if (sortByYear){
+            pagedBook = new PagedBook(booksRepository.findAll(PageRequest.of(numberOfPage, itemsPerPage, Sort.by("year"))));
+        }else {
+            pagedBook = new PagedBook(booksRepository.findAll(PageRequest.of(numberOfPage, itemsPerPage)));
+        }
+        return pagedBook;
     }
 
     public Book findOne(Integer id) {
@@ -64,16 +77,7 @@ public class BooksService {
     public class PagedBook {
         private List<Book> booksOnPage;
         private List<Integer> pageNumbers;
-        private int page;
-        private int limit;
 
-        public int getPage() {
-            return page;
-        }
-
-        public int getLimit() {
-            return limit;
-        }
 
         public List<Book> getBooksOnPage() {
             return booksOnPage;
@@ -85,8 +89,6 @@ public class BooksService {
 
         PagedBook(Page<Book> booksPage) {
             booksOnPage = booksPage.getContent();
-            page = booksPage.getNumber();
-            limit = booksPage.getSize();
             int totalPages = booksPage.getTotalPages();
             if (totalPages > 0) {
                 pageNumbers = IntStream.rangeClosed(0, totalPages - 1)
