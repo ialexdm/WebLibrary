@@ -11,6 +11,9 @@ import ru.ialexdm.springapp.models.Reader;
 import ru.ialexdm.springapp.services.BooksService;
 import ru.ialexdm.springapp.services.ReadersService;
 
+import java.util.Collections;
+import java.util.List;
+
 @Controller
 @RequestMapping("/books")
 public class BooksController {
@@ -26,12 +29,23 @@ public class BooksController {
     @GetMapping()
     public String index(Model model,
                         @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
-                        @RequestParam(value = "limit", defaultValue = "3") @Min(1) int limit) {
-        BooksService.PagedBook pagingBooks = booksService.findAll(page, limit);
-        model.addAttribute("books", pagingBooks.getBooksOnPage());
-        model.addAttribute("totalPages", pagingBooks.getPageNumbers());
-        model.addAttribute("pageNumber", pagingBooks.getPage());
-        model.addAttribute("limit", pagingBooks.getLimit());
+                        @RequestParam(value = "limit", defaultValue = "3") @Min(1) int limit,
+                        @RequestParam(value = "sort_by_year", defaultValue = "true") boolean sortByYear) {
+        List<Book> books;
+        List<Integer> totalPages;
+        if (limit == 0){
+            books = booksService.findAll(sortByYear);
+            totalPages = Collections.emptyList();
+        }
+        else {
+            BooksService.PagedBook pagingBooks = booksService.findAll(page, limit, sortByYear);
+            books = pagingBooks.getBooksOnPage();
+            totalPages = pagingBooks.getPageNumbers();
+        }
+        model.addAttribute("books", books);
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("pageNumber", page);
+        model.addAttribute("limit", limit);
         return "books/index";
     }
     @GetMapping("/{id}")
