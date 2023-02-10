@@ -1,6 +1,7 @@
 package ru.ialexdm.springapp.controllers;
 
 import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -23,8 +24,14 @@ public class BooksController {
     }
 
     @GetMapping()
-    public String index(Model model){
-        model.addAttribute("books", booksService.findAll());
+    public String index(Model model,
+                        @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
+                        @RequestParam(value = "limit", defaultValue = "3") @Min(1) int limit) {
+        BooksService.PagedBook pagingBooks = booksService.findAll(page, limit);
+        model.addAttribute("books", pagingBooks.getBooksOnPage());
+        model.addAttribute("totalPages", pagingBooks.getPageNumbers());
+        model.addAttribute("pageNumber", pagingBooks.getPage());
+        model.addAttribute("limit", pagingBooks.getLimit());
         return "books/index";
     }
     @GetMapping("/{id}")

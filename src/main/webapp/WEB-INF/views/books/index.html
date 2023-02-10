@@ -14,5 +14,9 @@
 <br/>
 <hr/>
 <a href="books/new">Add new book</a>
+<div th:if="${totalPages.size() > 0}">
+    <a th:each="number : ${totalPages}" th:href="@{/books(limit=${limit}, page=${number})}"
+       th:text="'Page:' + ${number+1} + '| '"></a>
+</div>
 </body>
 </html>
