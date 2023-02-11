@@ -9,6 +9,7 @@ import ru.ialexdm.springapp.models.Book;
 import ru.ialexdm.springapp.models.Reader;
 import ru.ialexdm.springapp.repositories.BooksRepository;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -46,6 +47,12 @@ public class BooksService {
     public Book findOne(Integer id) {
         Optional<Book> foundedBook = booksRepository.findById(id);
         return foundedBook.orElse(null);
+    }
+    public List<Book> findAllByName(String name){
+        if (name == null || name.isEmpty()){
+            return Collections.emptyList();
+        }
+        return booksRepository.findAllByNameContainsIgnoreCase(name);
     }
 
     public Reader getBookReader(Book book) {

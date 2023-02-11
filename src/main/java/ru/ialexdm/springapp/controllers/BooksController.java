@@ -25,7 +25,6 @@ public class BooksController {
         this.booksService = booksService;
         this.readersService = readersService;
     }
-
     @GetMapping()
     public String index(Model model,
                         @RequestParam(value = "page", defaultValue = "0") @Min(0) int page,
@@ -110,6 +109,12 @@ public class BooksController {
         }
         booksService.save(book);
         return "redirect:/books";
+    }
+    @GetMapping("/find")
+    public String find(@RequestParam(value = "name", required = false) String name, Model model){
+        List<Book> foundBooks= booksService.findAllByName(name);
+        model.addAttribute("books",foundBooks);
+        return "books/find";
     }
 
 }
