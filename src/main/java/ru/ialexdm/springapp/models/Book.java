@@ -3,6 +3,8 @@ package ru.ialexdm.springapp.models;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
+import java.time.LocalDate;
+
 @Entity
 @Table(name = "Book")
 public class Book {
@@ -23,7 +25,8 @@ public class Book {
     @NotNull(message = "Field should not be empty")
     @Column(name = "year")
     private Integer year;
-
+    @Column(name = "was_got")
+    LocalDate wasGot;
     @ManyToOne
     @JoinColumn(name = "reader_id", referencedColumnName = "id")
     private  Reader bookReader;
@@ -36,6 +39,14 @@ public class Book {
         this.name = name;
         this.author = author;
         this.year = year;
+    }
+
+    public LocalDate getWasGot() {
+        return wasGot;
+    }
+
+    public void setWasGot(LocalDate wasGot) {
+        this.wasGot = wasGot;
     }
 
     public Integer getId() {
