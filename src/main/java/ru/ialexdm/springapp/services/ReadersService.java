@@ -8,7 +8,10 @@ import ru.ialexdm.springapp.models.Book;
 import ru.ialexdm.springapp.models.Reader;
 import ru.ialexdm.springapp.repositories.ReadersRepository;
 
+import java.time.LocalDate;
 import java.util.*;
+
+import static java.time.temporal.ChronoUnit.DAYS;
 
 @Service
 @Transactional(readOnly = true)
@@ -38,6 +41,20 @@ public class ReadersService {
         }
         return Collections.EMPTY_LIST;
     }
+
+    public boolean[] isBooksDelayed(List<Book> books){
+        boolean[] isDelayed = null;
+        if (!books.isEmpty()){
+            isDelayed = new boolean[books.size()];
+            for (int i = 0; i< books.size(); i++){
+                LocalDate wasGot = books.get(i).getWasGot();
+                isDelayed[i] = wasGot != null &&
+                        DAYS.between(wasGot, LocalDate.now()) > 10;
+            }
+        }
+        return isDelayed;
+    }
+
     @Transactional
     public void save(Reader reader){
         readersRepository.save(reader);

@@ -11,8 +11,8 @@
 <hr/>
 <form th:if="${!readersBooks.isEmpty()}">
     <p>Books are taken:</p>
-    <div th:each="book : ${readersBooks}">
-        <a th:href="@{/books/{id}(id = ${book.getId()})}"
+    <div th:each="book, iterStat : ${readersBooks}">
+        <a th:style ="${isBooksDelayed[iterStat.index]} ? 'color: red' : '' "  th:href="@{/books/{id}(id = ${book.getId()})}"
            th:text="${book.getName()} + ', '+ ${book.getAuthor()} + ', ' + ${book.getYear()}"> </a>
     </div>
     <hr/>

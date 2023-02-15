@@ -9,6 +9,7 @@ import ru.ialexdm.springapp.models.Book;
 import ru.ialexdm.springapp.models.Reader;
 import ru.ialexdm.springapp.repositories.BooksRepository;
 
+import java.time.LocalDate;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -78,9 +79,15 @@ public class BooksService {
     @Transactional
     public void transfer(Integer id, Reader reader) {
         Optional<Book> transferedBook = booksRepository.findById(id);
-        transferedBook.ifPresent(b -> b.setBookReader(reader));
+        transferedBook.ifPresent(b ->{
+            b.setBookReader(reader);
+            if (b.getBookReader() == null){
+                b.setWasGot(null);
+            }else{
+                b.setWasGot(LocalDate.now());
+            }
+        });
     }
-
     public class PagedBook {
         private List<Book> booksOnPage;
         private List<Integer> pageNumbers;

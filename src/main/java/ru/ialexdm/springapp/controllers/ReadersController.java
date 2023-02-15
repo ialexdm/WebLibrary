@@ -5,9 +5,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import ru.ialexdm.springapp.models.Book;
 import ru.ialexdm.springapp.models.Reader;
 import ru.ialexdm.springapp.services.ReadersService;
 import ru.ialexdm.springapp.util.ReaderValidator;
+
+import java.util.List;
 
 @Controller
 @RequestMapping("/readers")
@@ -30,7 +33,10 @@ public class ReadersController {
     {
         Reader reader = readersService.findOne(id);
         model.addAttribute("reader",reader);
-        model.addAttribute("readersBooks",readersService.findBooksByReaderId(id));
+        List<Book> readersBooks = readersService.findBooksByReaderId(id);
+        model.addAttribute("readersBooks",readersBooks);
+        model.addAttribute("isBooksDelayed", readersService.isBooksDelayed(readersBooks));
+
         return "readers/show";
     }
     @GetMapping("/{id}/edit")
